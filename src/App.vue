@@ -1,32 +1,33 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <tab-bar :tabList="tabList" :route="route" />
+    <router-view />
+    <player />
   </div>
 </template>
-
-<style>
+<script>
+import TabBar from "@/components/tabbar/TabBar.vue";
+import Player from "@/components/content/Player.vue";
+export default {
+  data() {
+    return {
+      tabList: ["发现音乐", "我的音乐", "朋友", "商城", "音乐人", "下载客户端"],
+      route: ["/discover", "/mine", "/friend", "shop", "/artist", "/download"],
+    };
+  },
+  components: {
+    TabBar,
+    Player,
+  },
+  computed: {},
+  methods: {},
+};
+</script>
+<style >
+@import "./assets/css/base.css";
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  overflow: hidden;
 }
 </style>
