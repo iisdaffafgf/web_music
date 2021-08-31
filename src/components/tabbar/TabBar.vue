@@ -82,7 +82,7 @@ export default {
   display: flex;
 }
 .logo {
-  margin: auto 0;
+  margin: 21px 0;
   width: 200px;
   height: 38px;
   background-image: url("~@/assets/img/topbar/logo.png");
@@ -91,7 +91,7 @@ export default {
 }
 .others {
   display: flex;
-  width: 300px;
+  width: 320px;
   justify-content: space-around;
 }
 .search {
@@ -101,7 +101,7 @@ export default {
   border-radius: 20px;
   line-height: 30px;
   height: 30px;
-  margin: auto 0;
+  margin: 25px 0;
   background-color: #fff;
 }
 .search input {
@@ -150,8 +150,9 @@ export default {
 .btn {
   cursor: pointer;
   line-height: 30px;
+  width: 83px;
   height: 30px;
-  margin: auto 5px;
+  margin: 25px 5px;
   padding: 0 5px;
   border-radius: 15px;
   border: 1px solid #ccc;

@@ -14,7 +14,6 @@ import {
   Toplist,
   getPlaylist,
   SongInfo,
-  getSongUrl,
 } from "@/network/ranklist.js";
 
 import TopLists from "./ranklist/TopLists.vue";
