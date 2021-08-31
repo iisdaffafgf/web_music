@@ -97,6 +97,7 @@
             src="~@/assets/img/player/suiji.png"
             alt="列表随机播放"
             title="列表随机播放"
+            @click="random"
           />
           <div class="list">
             <div class="img-tip" @click="openList">
@@ -111,11 +112,11 @@
               <title>播放列表({{ songsList.length }})</title>
               <li
                 v-for="(item, index) in songsList"
-                :key="item.id"
+                :key="item.id + index"
                 @click="changeSong(index)"
                 :class="{ playnow: currentIndex === index }"
               >
-                <p class="list-item-name">{{ item.al.name }}</p>
+                <p class="list-item-name">{{ item.name }}</p>
                 <p class="list-item-artist">
                   <span
                     class="list-item-artist"
@@ -130,7 +131,7 @@
           </div>
         </div>
       </div>
-      <div class="lock" @click="lockState" title="锁定/解锁(P)">
+      <div class="lock" @click="lockState" title="锁定/解锁(L)">
         <img src="~@/assets/img/player/suoding.png" alt="" v-show="!lock" />
         <img src="~@/assets/img/player/jiesuo.png" alt="" v-show="lock" />
       </div>
@@ -146,12 +147,13 @@
       preload="auto"
       @canplay="canPlay"
       autoplay
+      crossOrigin="anonymous"
     ></audio>
   </div>
 </template>
 
 <script>
-// import { getPlayList, getSongUrl } from "@/network/recommend.js";
+import { getSongUrl } from "@/network/recommend.js";
 // import { nextTick } from "vue/types/umd";
 export default {
   name: "Player",
@@ -177,7 +179,7 @@ export default {
     },
     // 获取歌名
     getName() {
-      return this.songsList[this.currentIndex].al.name;
+      return this.songsList[this.currentIndex].name;
     },
     // 获取歌手
     getArtist() {
@@ -207,7 +209,11 @@ export default {
     },
     // 返回当前播放歌曲的url
     currentIndexSongUrl() {
-      return this.songs[this.currentIndex].url;
+      if (this.songs[this.currentIndex]) {
+        return this.songs[this.currentIndex].url;
+      }
+
+      return "";
     },
   },
   watch: {
@@ -237,6 +243,49 @@ export default {
     },
   },
   methods: {
+    // 数组随机
+    shuffle(arr1, arr2) {
+      for (let i = arr1.length - 1; i >= 0; i--) {
+        let randomIndex = Math.floor(Math.random() * (i + 1));
+        let itemAtIndex1 = arr1[randomIndex];
+        let itemAtIndex2 = arr2[randomIndex];
+        arr1[randomIndex] = arr1[i];
+        arr2[randomIndex] = arr2[i];
+
+        arr1[i] = itemAtIndex1;
+        arr2[i] = itemAtIndex2;
+      }
+      return arr1, arr2;
+    },
+    // 随机列表播放
+    random() {
+      var nowId = this.songs[this.currentIndex].id;
+      this.shuffle(this.songs, this.songsList);
+      for (let i = 0; i < this.songsList.length; i++) {
+        if (this.songs[i] === undefined) {
+          continue;
+        }
+        if (
+          this.songs[i].id === this.songsList[i].id &&
+          this.songsList[i].id === nowId
+        ) {
+          this.currentIndex = i;
+        }
+      }
+    },
+    getUrl() {
+      getSongUrl(this.songsList[this.currentIndex].id).then((res) => {
+        // this.currentSong = res.data.data[0];
+        // this.songs.length += this.songsList.length;
+
+        this.songs.splice(this.currentIndex, 1, res.data.data[0]);
+      });
+    },
+    getUrlArtistSong() {
+      getSongUrl(this.songsList[this.currentIndex].id).then((res) => {
+        this.songs.unshift(res.data.data[0]);
+      });
+    },
     // 切换播放/暂停
     toggState() {
       if (!this.$store.state.isPlay) {
@@ -253,9 +302,15 @@ export default {
     prev() {
       if (this.currentIndex > 0) {
         this.currentIndex--;
+        if (this.songs[this.currentIndex] == undefined) {
+          this.getUrl();
+        }
         this.$store.commit("playState", true);
       } else {
         this.currentIndex = this.songs.length - 1;
+        if (this.songs[this.currentIndex] == undefined) {
+          this.getUrl();
+        }
         this.$store.commit("playState", true);
       }
     },
@@ -263,15 +318,24 @@ export default {
     next() {
       if (this.currentIndex < this.songs.length - 1) {
         this.currentIndex++;
+        // if (this.songs[this.currentIndex] == undefined) {
+        this.getUrl();
+        // }
         this.$store.commit("playState", true);
       } else {
         this.currentIndex = 0;
+        // this.getUrl();
+
         this.$store.commit("playState", true);
       }
     },
     // 当前播放完毕自动下一首
     autoNext() {
-      this.next();
+      if (this.songsList.length == 1) {
+        this.$store.commit("playState", false);
+      } else {
+        this.next();
+      }
     },
     // 获取当前播放到的时间段
     getCurrentTime(e) {
@@ -305,7 +369,9 @@ export default {
     },
     // 点击播放列表内歌曲切歌
     changeSong(index) {
+      index;
       this.currentIndex = index;
+      this.getUrl();
       this.$store.commit("playState", true);
     },
     // 点击播放列表图标打开播放列表
@@ -329,11 +395,11 @@ export default {
   mounted() {
     // 获取整个歌单的集合
     this.$EventBus.$on("getsongsList", (data) => {
-      this.songsList = data;
+      this.songsList.unshift(...data);
     });
 
     //
-    // 全局添加事件监听-->p键切换播放与暂停
+    // 全局添加事件监听-->p键切换播放与暂停;L键锁定/解锁mini播放器
     window.onkeyup = () => {
       if (window.event.keyCode == 80) {
         this.$store.commit("keyupSpace");
@@ -344,8 +410,34 @@ export default {
     };
     // 监听事件总线-->鼠标点击某个歌单**播放按钮**
     this.$EventBus.$on("toggSong", (data) => {
-      this.songs = data;
+      this.songs.unshift(...data);
+      if (!this.songs.length) {
+        this.songs.length += this.songsList.length;
+      } else {
+        this.songs.length = this.songsList.length;
+      }
+      this.currentIndex = 0;
       // this.$store.commit("playState", true);
+    });
+    // 监听事件总线-->鼠标点击某首歌
+    this.$EventBus.$on("sendSongId", (data) => {
+      // 新添加到播放列表
+
+      var have = false;
+      for (let i = 0; i < this.songsList.length; i++) {
+        if (this.songsList[i].id === data.id) {
+          have = true;
+          this.currentIndex = i;
+          this.getUrl();
+        }
+      }
+      if (!have) {
+        this.songsList.unshift(data);
+        // this.songs.length = this.songsList.length;
+        this.getUrlArtistSong();
+        this.currentIndex = 0;
+      }
+      // 获取到url
     });
   },
 };
@@ -531,10 +623,17 @@ img {
   width: 250px;
   height: 300px;
   background-color: rgb(41, 41, 41);
-  /* color: rgb(109, 109, 109); */
+  overflow: auto;
   color: #eee;
-  /* overflow: scroll; */
 }
+/* 播放列表,滚动条样式 */
+.songs-list::-webkit-scrollbar {
+  width: 3px;
+}
+.songs-list::-webkit-scrollbar-thumb {
+  background-color: #fff;
+}
+
 .songs-list title {
   display: block;
   width: 100%;

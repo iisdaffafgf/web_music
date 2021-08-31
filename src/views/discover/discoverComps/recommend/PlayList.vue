@@ -36,14 +36,12 @@ export default {
         this.songsList = res.data.playlist.tracks;
         this.$EventBus.$emit("getsongsList", this.songsList);
         // 根据歌曲列表中每首歌的id，请求数据，获取歌曲详细数据(包括url)
-        this.songsList.forEach((item) => {
-          getSongUrl(item.id).then((res) => {
-            this.currentSong = res.data.data[0];
-            this.songs.push(res.data.data[0]);
-          });
+        getSongUrl(this.songsList[0].id).then((res) => {
+          this.currentSong = res.data.data[0];
+          this.songs.push(this.currentSong);
+          this.songs.length = this.songsList.length;
+          this.$EventBus.$emit("toggSong", this.songs);
         });
-        // 将歌单详情提交到事件总线
-        this.$EventBus.$emit("toggSong", this.songs);
       });
     },
   },

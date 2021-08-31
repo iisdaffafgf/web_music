@@ -31,6 +31,7 @@
         class="video-player-box"
         controls
         ref="videoPlayer"
+        @play="mvPlay"
       ></video>
     </div>
   </div>
@@ -64,6 +65,9 @@ export default {
       this.$refs.videoPlayer.pause();
       this.isClose = true;
       this.currentIndex = -1;
+    },
+    mvPlay() {
+      this.$store.commit("playState", false);
     },
   },
   created() {

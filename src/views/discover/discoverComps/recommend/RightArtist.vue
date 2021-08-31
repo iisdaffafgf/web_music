@@ -6,6 +6,7 @@
         v-for="(item, index) in artists"
         :key="item.accountId + index"
         class="item"
+        @click="getArtistSongs(index)"
       >
         <div>
           <img :src="item.picUrl" alt="" />
@@ -33,13 +34,19 @@ export default {
       artists: [],
     };
   },
+  methods: {
+    getArtistSongs(index) {
+      this.$router.push("/artistsongs/" + this.artists[index].id);
+      this.$EventBus.$emit("sendData", this.artists[index]);
+    },
+  },
   created() {
     getArtist(10).then((res) => {
       //   console.log(res.data.artists);
       this.artists = res.data.artists;
       this.artists.forEach((item) => {
         getArtistDetail(item.id).then((res) => {
-          //   console.log(res.data);
+          // console.log(res.data);
           res;
         });
       });

@@ -15,6 +15,9 @@ const Friend = () => import('@/views/friend/Friend.vue')
 const Shop = () => import('@/views/shop/Shop.vue')
 const Artist = () => import('@/views/artist/Artist.vue')
 const Download = () => import('@/views/download/Download.vue')
+
+const ArtistSongs = () => import('@/views/artistsongs/ArtistSongs.vue')
+const Search = () => import("@/views/search/Search.vue")
 const routes = [
   {
     path: '',
@@ -64,6 +67,14 @@ const routes = [
     path: '/download',
     component: Download
   },
+  {
+    path: '/artistsongs/:id',
+    component: ArtistSongs
+  }, {
+    // name: 'Search',
+    path: '/search/:keywords',
+    component: Search
+  }
 ]
 
 const router = new VueRouter({

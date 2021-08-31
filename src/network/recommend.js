@@ -4,18 +4,12 @@ import request from './request'
 export function getBanners() {
     return request({
         url: '/banner',
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }
 // 热门歌单请求
 export function getHotList() {
     return request({
         url: '/playlist/highquality/tags',
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }
 //歌单分类
@@ -35,9 +29,6 @@ export function getPlayList(id) {
         params: {
             id
         },
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }
 
@@ -48,9 +39,6 @@ export function getSongUrl(id) {
         params: {
             id
         },
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }
 
@@ -61,9 +49,6 @@ export function getArtist(limit) {
         params: {
             limit
         },
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }
 // 根据id获取歌手详细信息
@@ -73,9 +58,6 @@ export function getArtistDetail(id) {
         params: {
             id
         },
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }
 // 根据歌手id获取歌手热门50首
@@ -85,18 +67,12 @@ export function getArtistHot(id) {
         params: {
             id
         },
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }
 // 获取推荐Mv
 export function getRecommendMv() {
     return request({
         url: 'personalized/mv',
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }
 // 根据id获取mv播放地址
@@ -106,8 +82,5 @@ export function getMvUrl(id) {
         params: {
             id
         },
-        // xhrFields: {
-        //     withCredentials: true
-        // }
     })
 }

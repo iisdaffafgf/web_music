@@ -1,7 +1,7 @@
 <template>
   <div id="tab-bar">
     <div class="content">
-      <a href="javascript:;" class="logo"></a>
+      <a href="javascript:;" class="logo" @click="backHome"></a>
       <ul class="item-list">
         <li
           v-for="(item, index) in tabList"
@@ -16,7 +16,7 @@
       <div class="others">
         <div class="search">
           <div class="icon"><van-icon name="search" size="20" /></div>
-          <input type="text" placeholder="音乐/歌手" />
+          <input type="text" placeholder="音乐/歌手" @keydown="search" />
         </div>
         <button class="btn">创作者中心</button>
         <a href="javascript:;">登录</a>
@@ -46,10 +46,21 @@ export default {
       },
     },
   },
+
   methods: {
     jumpRoute(index) {
       this.$router.push(this.route[index]);
       this.currentIndex = index;
+    },
+    // 搜索框
+    search(e) {
+      if (e.keyCode == 13) {
+        const keywords = e.path[0].value;
+        this.$router.push("/search/" + keywords);
+      }
+    },
+    backHome() {
+      this.$router.push("/");
     },
   },
 };

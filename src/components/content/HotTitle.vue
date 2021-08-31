@@ -24,13 +24,14 @@ export default {};
 
 <style scoped>
 .hot {
+  width: 100%;
 }
 .title {
   position: relative;
   padding: 0 10px;
   height: 30px;
   line-height: 30px;
-
+  width: 100%;
   border-bottom: 2px solid rgb(193, 13, 12);
   display: flex;
   justify-content: space-between;
