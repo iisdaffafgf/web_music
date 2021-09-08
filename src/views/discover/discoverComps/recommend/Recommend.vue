@@ -12,9 +12,9 @@
 // getPlayList
 import { getBanners, getCaTlist } from "@/network/recommend.js";
 
-import Banner from "./recommend/Banner.vue";
-import LeftModule from "./recommend/LeftModule.vue";
-import RightModule from "./recommend/RightModule.vue";
+import Banner from "./banner/Banner.vue";
+import LeftModule from "./leftmodule/LeftModule.vue";
+import RightModule from "./rightmodule/RightModule.vue";
 export default {
   data() {
     return {

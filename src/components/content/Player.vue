@@ -112,7 +112,7 @@
               <title>播放列表({{ songsList.length }})</title>
               <li
                 v-for="(item, index) in songsList"
-                :key="item.id + index"
+                :key="item.id * index"
                 @click="changeSong(index)"
                 :class="{ playnow: currentIndex === index }"
               >
@@ -154,7 +154,6 @@
 
 <script>
 import { getSongUrl } from "@/network/recommend.js";
-// import { nextTick } from "vue/types/umd";
 export default {
   name: "Player",
   data() {
@@ -212,19 +211,20 @@ export default {
       if (this.songs[this.currentIndex]) {
         return this.songs[this.currentIndex].url;
       }
-
       return "";
     },
   },
   watch: {
     // watch监听vuex中的isPlay变化,绑定到音乐播放/暂停
     isPlay: function () {
-      if (this.isPlay) {
-        this.player.play();
-        // console.log("播放");
-      } else {
-        this.player.pause();
-        // console.log("暂停");
+      if (this.songsList.length) {
+        if (this.isPlay) {
+          if (this.player) {
+            this.player.play();
+          }
+        } else {
+          this.player.pause();
+        }
       }
     },
     // 监听当前播放到了什么时间,控制进度条变化
@@ -232,6 +232,7 @@ export default {
       this.$refs.showTime.style.width =
         (this.playTime / this.allTime) * 500 + "px";
     },
+
     canPlayNow: function (val) {
       if (val) {
         this.player = this.$refs.player;
@@ -283,50 +284,49 @@ export default {
     },
     getUrlArtistSong() {
       getSongUrl(this.songsList[this.currentIndex].id).then((res) => {
+        // console.log(this.songsList);
         this.songs.unshift(res.data.data[0]);
       });
     },
     // 切换播放/暂停
     toggState() {
-      if (!this.$store.state.isPlay) {
+      if (!this.$store.state.isPlay && this.songs.length != 0) {
         // 播放
         this.$store.commit("playState", true);
       } else {
         // 暂停
         this.$store.commit("playState", false);
       }
-      // console.log(this.songsList);
-      // songUrl:item.al.name/ songArtist:item.ar[every].name/ songtime:item.dt(毫秒)
     },
     // 上一首按钮被点击
     prev() {
-      if (this.currentIndex > 0) {
-        this.currentIndex--;
-        if (this.songs[this.currentIndex] == undefined) {
-          this.getUrl();
+      if (this.songsList.length) {
+        if (this.currentIndex > 0) {
+          this.currentIndex--;
+          if (this.songs[this.currentIndex] == undefined) {
+            this.getUrl();
+          }
+          this.$store.commit("playState", true);
+        } else {
+          this.currentIndex = this.songs.length - 1;
+          if (this.songs[this.currentIndex] == undefined) {
+            this.getUrl();
+          }
+          this.$store.commit("playState", true);
         }
-        this.$store.commit("playState", true);
-      } else {
-        this.currentIndex = this.songs.length - 1;
-        if (this.songs[this.currentIndex] == undefined) {
-          this.getUrl();
-        }
-        this.$store.commit("playState", true);
       }
     },
     // 下一曲按钮被点击
     next() {
-      if (this.currentIndex < this.songs.length - 1) {
-        this.currentIndex++;
-        // if (this.songs[this.currentIndex] == undefined) {
-        this.getUrl();
-        // }
-        this.$store.commit("playState", true);
-      } else {
-        this.currentIndex = 0;
-        // this.getUrl();
-
-        this.$store.commit("playState", true);
+      if (this.songsList.length) {
+        if (this.currentIndex < this.songs.length - 1) {
+          this.currentIndex++;
+          this.getUrl();
+          this.$store.commit("playState", true);
+        } else {
+          this.currentIndex = 0;
+          this.$store.commit("playState", true);
+        }
       }
     },
     // 当前播放完毕自动下一首
@@ -395,7 +395,9 @@ export default {
   mounted() {
     // 获取整个歌单的集合
     this.$EventBus.$on("getsongsList", (data) => {
-      this.songsList.unshift(...data);
+      if (this.songsList.length === 0 || data[0].id !== this.songsList[0].id) {
+        this.songsList.unshift(...data);
+      }
     });
 
     //
@@ -410,6 +412,7 @@ export default {
     };
     // 监听事件总线-->鼠标点击某个歌单**播放按钮**
     this.$EventBus.$on("toggSong", (data) => {
+      // console.log(data);
       this.songs.unshift(...data);
       if (!this.songs.length) {
         this.songs.length += this.songsList.length;
@@ -417,12 +420,14 @@ export default {
         this.songs.length = this.songsList.length;
       }
       this.currentIndex = 0;
+      this.changeSong(0);
+      // console.log(this.songs[this.currentIndex]);
       // this.$store.commit("playState", true);
     });
     // 监听事件总线-->鼠标点击某首歌
     this.$EventBus.$on("sendSongId", (data) => {
       // 新添加到播放列表
-
+      this.$store.commit("playState", true);
       var have = false;
       for (let i = 0; i < this.songsList.length; i++) {
         if (this.songsList[i].id === data.id) {
@@ -437,7 +442,6 @@ export default {
         this.getUrlArtistSong();
         this.currentIndex = 0;
       }
-      // 获取到url
     });
   },
 };

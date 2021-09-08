@@ -26,8 +26,8 @@
 
 <script>
 import HotTitle from "@/components/content/HotTitle.vue";
-import PlayList from "./PlayList.vue";
-import MvList from "./MvList.vue";
+import PlayList from "./childrenComps/PlayList.vue";
+import MvList from "./childrenComps/MvList.vue";
 export default {
   props: {
     recommendList: {

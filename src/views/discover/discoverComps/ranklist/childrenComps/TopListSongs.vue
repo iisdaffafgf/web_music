@@ -21,9 +21,10 @@
       class="song"
       v-for="(item, index) in currentSongs"
       :key="item.id * index"
+      @click="play(index)"
     >
       <span class="song-name">{{ item.name }}</span>
-      <span class="artist-name">{{ item.artistName }}</span>
+      <span class="artist-name">{{ item.ar[0].name }}</span>
     </li>
   </ul>
 </template>
@@ -42,6 +43,11 @@ export default {
       default() {
         return [];
       },
+    },
+  },
+  methods: {
+    play(index) {
+      this.$EventBus.$emit("sendSongId", this.currentSongs[index]);
     },
   },
 };

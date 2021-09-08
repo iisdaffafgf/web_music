@@ -1,6 +1,6 @@
 <template>
   <div class="mv-list">
-    <li class="mv-item" v-for="(item, index) in mvList" :key="item.id + index">
+    <li class="mv-item" v-for="(item, index) in mvList" :key="item.id * index">
       <div class="img">
         <img :src="item.picUrl" alt="" />
         <div class="play" @click="play(index)">
@@ -111,6 +111,7 @@ export default {
   top: 4px;
   width: 70px;
   opacity: 0.5;
+  cursor: pointer;
 }
 .play img {
   width: 70px;

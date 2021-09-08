@@ -42,10 +42,18 @@ export default {
     jump(index) {
       this.currentIndex = index;
       this.$router.push(this.route + this.routes[index]);
-      //   console.log(this.$route.path);
     },
   },
-  created() {},
+  created() {
+    {
+      // 初始化currentIndex等于当前路由位置的索引
+      for (let i in this.routes) {
+        if (this.route + this.routes[i] === this.$route.path) {
+          this.currentIndex = parseInt(i);
+        }
+      }
+    }
+  },
 };
 </script>
 

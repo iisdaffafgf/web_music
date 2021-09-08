@@ -32,22 +32,22 @@ const routes = [
         redirect: 'recommend'
       }, {
         path: 'recommend',
-        component: () => import("@/views/discover/discoverComps/Recommend.vue")
+        component: () => import("@/views/discover/discoverComps/recommend/Recommend.vue")
       }, {
         path: 'ranklist',
-        component: () => import("@/views/discover/discoverComps/Ranklist.vue")
+        component: () => import("@/views/discover/discoverComps/ranklist/Ranklist.vue")
       }, {
         path: 'playlist',
-        component: () => import("@/views/discover/discoverComps/Playlist.vue")
+        component: () => import("@/views/discover/discoverComps/playlist/Playlist.vue")
       }, {
         path: 'liveradio',
-        component: () => import("@/views/discover/discoverComps/Liveradio.vue")
+        component: () => import("@/views/discover/discoverComps/liveradio/Liveradio.vue")
       }, {
         path: 'singer',
-        component: () => import("@/views/discover/discoverComps/Singer.vue")
+        component: () => import("@/views/discover/discoverComps/singer/Singer.vue")
       }, {
         path: 'newdisc',
-        component: () => import("@/views/discover/discoverComps/Newdisc.vue")
+        component: () => import("@/views/discover/discoverComps/newdisc/Newdisc.vue")
       }
 
     ]

@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import RightLogin from "./RightLogin.vue";
-import RightArtist from "./RightArtist.vue";
+import RightLogin from "./childrenComps/RightLogin.vue";
+import RightArtist from "./childrenComps/RightArtist.vue";
 export default {
   components: {
     RightLogin,

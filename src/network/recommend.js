@@ -84,3 +84,13 @@ export function getMvUrl(id) {
         },
     })
 }
+
+// 根据id获取歌词
+export function getLrc(id) {
+    return request({
+        url: '/lyric',
+        params: {
+            id
+        }
+    })
+}

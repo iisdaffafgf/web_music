@@ -13,11 +13,11 @@ import {
   getToplist,
   Toplist,
   getPlaylist,
-  SongInfo,
+  // SongInfo,
 } from "@/network/ranklist.js";
 
-import TopLists from "./ranklist/TopLists.vue";
-import TopListSongs from "./ranklist/TopListSongs.vue";
+import TopLists from "./childrenComps/TopLists.vue";
+import TopListSongs from "./childrenComps/TopListSongs.vue";
 export default {
   components: {
     TopLists,
@@ -34,20 +34,7 @@ export default {
     getListDetail(id) {
       getPlaylist(id).then((res) => {
         let data = res.data.playlist.tracks;
-        let arr = [];
-        for (let i = 0; i < data.length; i++) {
-          let item = new SongInfo(data, i);
-          arr.push(item);
-        }
-        this.currentSongs = arr;
-        // this.currentSongs = new SongInfo(data);
-        // console.log(this.currentSongs);
-        // data.forEach((item, index) => {
-        //   // console.log(item.id);
-        //   getSongUrl(item.id).then((res) => {
-        //     // console.log(res);
-        //   });
-        // });
+        this.currentSongs = data;
       });
     },
     changeCurrent(index) {
@@ -59,11 +46,10 @@ export default {
     getToplist().then((res) => {
       const data = res.data.list;
       // console.log(data);
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 4; i++) {
         let item = new Toplist(data, i);
         this.topLists.push(item);
       }
-      // console.log(this.topLists);
       this.getListDetail(this.topLists[this.currentIndex].id);
     });
   },
